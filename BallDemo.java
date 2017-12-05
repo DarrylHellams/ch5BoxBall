@@ -1,4 +1,9 @@
 import java.awt.Color;
+import java.awt.*;
+import java.awt.geom.*;
+import java.util.Iterator;
+import java.util.Random;
+import java.util.HashSet;
 
 /**
  * Class BallDemo - a short demonstration showing animation with the 
@@ -51,6 +56,52 @@ public class BallDemo
             if(ball.getXPosition() >= 550 || ball2.getXPosition() >= 550) {
                 finished = true;
             }
+        }
+    }
+    
+    public void boxBounce (int numBalls)
+    { 
+        myCanvas.setVisible(true);
+        Rectangle box = new Rectangle(50, 50, 300, 300);
+        
+        Random random = new Random();
+        HashSet<BoxBall>balls = new HashSet<BoxBall>();
+        
+        for (int i = 0; i < numBalls; i++){
+            Dimension Size = myCanvas.getSize();
+            int x = (int) box.getX() + random.nextInt((int) box.getWidth());
+            int y = (int) box.getY() + random.nextInt((int) box.getHeight());
+            int xSpeed = random.nextInt(30);
+            int ySpeed = random.nextInt(30);
+            Color color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+            BoxBall ball = new BoxBall(x, y, xSpeed, ySpeed, 18, color, box, myCanvas);
+            
+            balls.add(ball);
+            ball.draw(); 
+        }
+        
+        boolean finished = false; 
+        while(!finished)
+        {
+            myCanvas.wait(50);
+            Iterator it = balls.iterator();
+            while(it.hasNext())
+            {
+                BoxBall ball = (BoxBall) it.next();
+                ball.move();
+                myCanvas.draw(box);
+                
+                if (ball.getXPosition() >= 550 + 32 * numBalls)
+                    finished = true;
+            }
+        }
+        
+        Iterator it = balls.iterator();
+        
+        while(it.hasNext())
+        {
+            BoxBall ball = (BoxBall) it.next();
+            ball.erase();
         }
     }
 }
